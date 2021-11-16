@@ -42,6 +42,9 @@ class AlienInvasion:
         # Set the background color.
         self.bg_color = (230, 230, 230)
 
+        # Initialize the pygame sound mixer.
+        pygame.mixer.init()
+
     def run_game(self):
         """Start the main loop for the game."""
         while True:
@@ -113,6 +116,8 @@ class AlienInvasion:
         if len(self.bullets) < self.settings.bullets_allowed:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+            self.sound = pygame.mixer.Sound('blaster.wav')
+            pygame.mixer.Sound.play(self.sound)
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
@@ -139,8 +144,15 @@ class AlienInvasion:
             self.sb.prep_score()
             self.sb.check_high_score()
 
+            self.play_collision_sound()
+
         if not self.aliens:
             self.start_new_level()
+
+    def play_collision_sound(self):
+        self.sound = pygame.mixer.Sound('collision.wav')
+        pygame.mixer.Sound.play(self.sound)
+
 
     def start_new_level(self):
             # Destroy existing bullets and create new fleet.
@@ -151,6 +163,11 @@ class AlienInvasion:
             # Increase level.
             self.stats.level += 1
             self.sb.prep_level()
+            self.play_levelup_sound()
+
+    def play_levelup_sound(self):
+        self.sound = pygame.mixer.Sound('levelup.wav')
+        pygame.mixer.Sound.play(self.sound)
 
     def _update_aliens(self):
         """
